@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Sudoku</h2>
+
+<p id="Sudoku"><button onclick="StartNewSudoku(SudokuSeed)">Click me</button></p>
+
+<p id="Debug"></p>
+
+<script>
+var SudokuSeed = [
+  "1", "2", "3", "4", "5", "6", "7", "8", "9"
+, "4", "5", "6", "7", "8", "9", "1", "2", "3"
+, "7", "8", "9", "1", "2", "3", "4", "5", "6"
+, "2", "3", "1", "5", "6", "4", "8", "9", "7"
+, "5", "6", "4", "8", "9", "7", "2", "3", "1"
+, "8", "9", "7", "2", "3", "1", "5", "6", "4"
+, "3", "1", "2", "6", "4", "5", "9", "7", "8"
+, "6", "4", "5", "9", "7", "8", "3", "1", "2"
+, "9", "7", "8", "3", "1", "2", "6", "4", "5"
+];
+  var NewSudoku = [
+  "1", "2", "3", "4", "5", "6", "7", "8", "9"
+, "4", "5", "6", "7", "8", "9", "1", "2", "3"
+, "7", "8", "9", "1", "2", "3", "4", "5", "6"
+, "2", "3", "1", "5", "6", "4", "8", "9", "7"
+, "5", "6", "4", "8", "9", "7", "2", "3", "1"
+, "8", "9", "7", "2", "3", "1", "5", "6", "4"
+, "3", "1", "2", "6", "4", "5", "9", "7", "8"
+, "6", "4", "5", "9", "7", "8", "3", "1", "2"
+, "9", "7", "8", "3", "1", "2", "6", "4", "5"
+];
+function PlotSudoku(InputSudoku) {
+var Sudoku, text, SudoLen, i, line;
+Sudoku = InputSudoku;
+SudoLen = Sudoku.length;
+var Sudowidth = 9;
+var Sudohight = 9;
+
+text = ReturnButtonToFunction("StartNewSudoku");
+text += "<table>";
+for (i = 0; i < Sudowidth; i++) {
+  line = "";
+  for (j = 0; j < Sudohight; j++) {
+    line += "<td id="+ (j+i*Sudowidth) + " onclick=" + "SudokuFieldTouch("+(j+i*Sudowidth)+")" + ">" + Sudoku[(j+i*Sudowidth)] + "</td>";
+  }
+  text += "<tr>" + line + "</th>";
+}
+text += "</table>";
+text += "<p id=\"Navigation\">Drücke auf ein Feld im Sudoku und dannach auf die Zahl hier unten zum Füllen des Selbigen mit der Selbigen.<\/p>";
+
+document.getElementById("Sudoku").innerHTML = text;
+}
+
+function SudokuFieldTouch(ThisID){
+text = "";
+for (j = 0; j < 9; j++) {
+  text += "<button onclick=\"ButtonClick("+(j+1)+","+ThisID+")\">"+(j+1)+"</button>";
+}
+text += "</div>";
+document.getElementById("Navigation").innerHTML = text;
+}
+
+function ButtonClick( Value, ThisID){
+document.getElementById(ThisID).innerHTML = Value;
+}
+
+function StartNewSudoku(){
+NewSudoku = Randomize();
+NewSudoku = Hide(NewSudoku);
+PlotSudoku(NewSudoku);
+}
+
+function Randomize(){
+
+
+for (j = 0; j < 9; j++) {
+  var Swap=Math.floor(Math.random() * 3 );
+
+  NewSudoku = SwitchRowAndSquare(NewSudoku,Swap);
+}
+NewSudoku = PushRightColumnToLeftSide(NewSudoku);
+/*
+for (j = 0; j < 9; j++) {
+  var Swap=Math.floor(Math.random() * 3 );
+
+    NewSudoku = SwitchRowAndSquare(NewSudoku,Swap);
+}*/
+
+  
+  return NewSudoku;
+}
+
+
+
+function SwitchRowAndSquare(NewSudoku, Row){
+  var debug="";
+   var Swap = 3 * Math.round(Math.random() * 2) + Row ;
+   debug = " S;"+Swap;
+  document.getElementById("Debug").innerHTML = document.getElementById("Debug").innerHTML+debug;
+for( x = 0; x < 9; x++)
+  {
+    var Temp;
+    Temp = NewSudoku[ (Row) + x*10-x];
+    NewSudoku[(Row)+x*10-x]=NewSudoku[(Swap)+x*10-x];
+    NewSudoku[(Swap)+x*10-x]=Temp;
+  }
+  return NewSudoku;
+/* This is for debugging Purposes
+  text = "Row: " + Row + " SwapTo: " + SwapTo ;
+  document.getElementById("Debug").innerHTML = text; */
+}
+
+function SwitchLineAndSquare(NewSudoku, Line){
+var SwapTo = 3 * Math.round(Math.random() * 2) + Line ;
+debug = "F: "+SwapTo;
+document.getElementById("Debug").innerHTML = document.getElementById("Debug").innerHTML+debug;
+for(x = 0; x < 9; x++)
+  {
+    var Temp;
+    Temp = NewSudoku[Line*9+x];
+    NewSudoku[Line*9+x]=NewSudoku[SwapTo*9+x];
+    NewSudoku[SwapTo*9+x]=Temp;
+  }
+  return NewSudoku;
+/* This is for debugging Purposes
+  text = "Line: " + Line + " SwapTo: " + SwapTo ;
+  document.getElementById("Debug").innerHTML = text;*/
+}
+
+
+function Hide(Sudoku){
+  for( NrOfSpaces = 0; NrOfSpaces < 20; NrOfSpaces++){
+    ChangingField = Math.floor(Math.random() * 81);
+    Sudoku[ChangingField]=" ";
+  }
+  return Sudoku;
+}
+
+function PushLeftRight(Square, Swap){
+  if(Swap){
+    Square = PushTopRowToBottom(Square);
+  }else{
+    Square = PushRightColumnToLeftSide(Square);
+  }
+  return NewSudoku;
+}
+function PushRightColumnPartToLeftSide(NewSudoku, From, To){
+  for(VerticalLine = From; VerticalLine < To; VerticalLine++){
+    NewSudoku.splice( 9 * ( VerticalLine + 1 ), 0, NewSudoku[( VerticalLine * 9 )]); //Switches Right side Nr to Leftside Nr
+    NewSudoku.splice(VerticalLine * 9, 1); //Removes left Side Number
+  }
+  return NewSudoku
+}
+function PushRightColumnToLeftSide(NewSudoku){
+  for(VerticalLine = 0; VerticalLine < 9; VerticalLine++){
+    NewSudoku.splice( 9 * ( VerticalLine + 1 ), 0, NewSudoku[( VerticalLine * 9 )]); //Switches Right side Nr to Leftside Nr
+    NewSudoku.splice(VerticalLine * 9, 1); //Removes left Side Number
+  }
+  return NewSudoku
+}
+function PushBottomRowToTop(NewSudoku){
+  for(TopRow = 0; TopRow < 9; TopRow++){
+    NewSudoku.splice(0, 0, NewSudoku[80]);
+    NewSudoku.splice(81, 1);//Removes Top Number
+  }
+  return NewSudoku
+}
+
+function ReturnButtonToFunction( Name ) {
+  return "<p id="+Name+"><button onclick=\""+Name+"()\">"+Name+"</button></p>";
+}
+</script>
+
+</body>
+</html>
