@@ -1,5 +1,21 @@
 <!DOCTYPE html>
 <html>
+<head>
+<style>
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+td:nth-child(3n) {
+  border-right: 3px solid black;
+}
+tr:nth-child(3n) {
+  border-bottom: 3px solid black;
+}
+
+</style>
+</head>
 <body>
 
 <h2>Sudoku</h2>
@@ -20,21 +36,8 @@ var SudokuSeed = [
 , "6", "4", "5", "9", "7", "8", "3", "1", "2"
 , "9", "7", "8", "3", "1", "2", "6", "4", "5"
 ];
-  var NewSudoku = [
-  "1", "2", "3", "4", "5", "6", "7", "8", "9"
-, "4", "5", "6", "7", "8", "9", "1", "2", "3"
-, "7", "8", "9", "1", "2", "3", "4", "5", "6"
-, "2", "3", "1", "5", "6", "4", "8", "9", "7"
-, "5", "6", "4", "8", "9", "7", "2", "3", "1"
-, "8", "9", "7", "2", "3", "1", "5", "6", "4"
-, "3", "1", "2", "6", "4", "5", "9", "7", "8"
-, "6", "4", "5", "9", "7", "8", "3", "1", "2"
-, "9", "7", "8", "3", "1", "2", "6", "4", "5"
-];
 function PlotSudoku(InputSudoku) {
-var Sudoku, text, SudoLen, i, line;
-Sudoku = InputSudoku;
-SudoLen = Sudoku.length;
+var text, line;
 var Sudowidth = 9;
 var Sudohight = 9;
 
@@ -43,7 +46,7 @@ text += "<table>";
 for (i = 0; i < Sudowidth; i++) {
   line = "";
   for (j = 0; j < Sudohight; j++) {
-    line += "<td id="+ (j+i*Sudowidth) + " onclick=" + "SudokuFieldTouch("+(j+i*Sudowidth)+")" + ">" + Sudoku[(j+i*Sudowidth)] + "</td>";
+    line += "<td id="+ (j+i*Sudowidth) + " onclick=" + "SudokuFieldTouch("+(j+i*Sudowidth)+")" + ">" + InputSudoku[(j+i*Sudowidth)] + "</td>";
   }
   text += "<tr>" + line + "</th>";
 }
@@ -67,9 +70,9 @@ document.getElementById(ThisID).innerHTML = Value;
 }
 
 function StartNewSudoku(){
-NewSudoku = Randomize();
-NewSudoku = Hide(NewSudoku);
-PlotSudoku(NewSudoku);
+SudokuSeed = Randomize();
+SudokuSeed = Hide(SudokuSeed);
+PlotSudoku(SudokuSeed);
 }
 
 function Randomize(){
@@ -78,74 +81,57 @@ function Randomize(){
 for (j = 0; j < 9; j++) {
   var Swap=Math.floor(Math.random() * 3 );
 
-  NewSudoku = SwitchRowAndSquare(NewSudoku,Swap);
+  SudokuSeed = SwitchRowAndSquare(SudokuSeed,Swap);
 }
-NewSudoku = PushRightColumnToLeftSide(NewSudoku);
-/*
-for (j = 0; j < 9; j++) {
-  var Swap=Math.floor(Math.random() * 3 );
-
-    NewSudoku = SwitchRowAndSquare(NewSudoku,Swap);
-}*/
+SudokuSeed = PushRightColumnToLeftSide(SudokuSeed);
 
   
-  return NewSudoku;
+  return SudokuSeed;
 }
 
 
 
-function SwitchRowAndSquare(NewSudoku, Row){
+function SwitchRowAndSquare(Square, Row){
   var debug="";
    var Swap = 3 * Math.round(Math.random() * 2) + Row ;
-   debug = " S;"+Swap;
-  document.getElementById("Debug").innerHTML = document.getElementById("Debug").innerHTML+debug;
+
 for( x = 0; x < 9; x++)
   {
     var Temp;
-    Temp = NewSudoku[ (Row) + x*10-x];
-    NewSudoku[(Row)+x*10-x]=NewSudoku[(Swap)+x*10-x];
-    NewSudoku[(Swap)+x*10-x]=Temp;
+    Temp = Square[ (Row) + x*10-x];
+    Square[(Row)+x*10-x]=Square[(Swap)+x*10-x];
+    Square[(Swap)+x*10-x]=Temp;
   }
-  return NewSudoku;
+  return Square;
 /* This is for debugging Purposes
+   debug = " S;"+Swap;
+  document.getElementById("Debug").innerHTML = document.getElementById("Debug").innerHTML+debug;
   text = "Row: " + Row + " SwapTo: " + SwapTo ;
   document.getElementById("Debug").innerHTML = text; */
 }
 
-function SwitchLineAndSquare(NewSudoku, Line){
+function SwitchLineAndSquare(QuadraticData, Line){
 var SwapTo = 3 * Math.round(Math.random() * 2) + Line ;
-debug = "F: "+SwapTo;
-document.getElementById("Debug").innerHTML = document.getElementById("Debug").innerHTML+debug;
 for(x = 0; x < 9; x++)
   {
     var Temp;
-    Temp = NewSudoku[Line*9+x];
-    NewSudoku[Line*9+x]=NewSudoku[SwapTo*9+x];
-    NewSudoku[SwapTo*9+x]=Temp;
+    Temp = QuadraticData[Line*9+x];
+    QuadraticData[Line*9+x]=QuadraticData[SwapTo*9+x];
+    QuadraticData[SwapTo*9+x]=Temp;
   }
-  return NewSudoku;
-/* This is for debugging Purposes
-  text = "Line: " + Line + " SwapTo: " + SwapTo ;
-  document.getElementById("Debug").innerHTML = text;*/
+  return QuadraticData;
 }
 
 
-function Hide(Sudoku){
+function Hide(QuadraticData){
   for( NrOfSpaces = 0; NrOfSpaces < 20; NrOfSpaces++){
     ChangingField = Math.floor(Math.random() * 81);
-    Sudoku[ChangingField]=" ";
+    QuadraticData[ChangingField]=" ";
   }
-  return Sudoku;
+  return QuadraticData;
 }
 
-function PushLeftRight(Square, Swap){
-  if(Swap){
-    Square = PushTopRowToBottom(Square);
-  }else{
-    Square = PushRightColumnToLeftSide(Square);
-  }
-  return NewSudoku;
-}
+
 function PushRightColumnPartToLeftSide(NewSudoku, From, To){
   for(VerticalLine = From; VerticalLine < To; VerticalLine++){
     NewSudoku.splice( 9 * ( VerticalLine + 1 ), 0, NewSudoku[( VerticalLine * 9 )]); //Switches Right side Nr to Leftside Nr
@@ -153,19 +139,12 @@ function PushRightColumnPartToLeftSide(NewSudoku, From, To){
   }
   return NewSudoku
 }
-function PushRightColumnToLeftSide(NewSudoku){
+function PushRightColumnToLeftSide(QuadraticData){
   for(VerticalLine = 0; VerticalLine < 9; VerticalLine++){
-    NewSudoku.splice( 9 * ( VerticalLine + 1 ), 0, NewSudoku[( VerticalLine * 9 )]); //Switches Right side Nr to Leftside Nr
-    NewSudoku.splice(VerticalLine * 9, 1); //Removes left Side Number
+    QuadraticData.splice( 9 * ( VerticalLine + 1 ), 0, QuadraticData[( VerticalLine * 9 )]); //Switches Right side Nr to Leftside Nr
+    QuadraticData.splice(VerticalLine * 9, 1); //Removes left Side Number
   }
-  return NewSudoku
-}
-function PushBottomRowToTop(NewSudoku){
-  for(TopRow = 0; TopRow < 9; TopRow++){
-    NewSudoku.splice(0, 0, NewSudoku[80]);
-    NewSudoku.splice(81, 1);//Removes Top Number
-  }
-  return NewSudoku
+  return QuadraticData
 }
 
 function ReturnButtonToFunction( Name ) {
