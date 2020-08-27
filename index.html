@@ -18,6 +18,7 @@ button:hover {
   background-color: orange;
 }
 table{
+  text-align: center;
   background-color: lightblue;
   width:100%;
   height:100%;
@@ -39,19 +40,25 @@ tr:nth-child(3n) {
 body{
   background-color: LightSlateGrey;
 }
-
+#Navigation{
+  text-align: center;
+  align-content: center;
+}
+#Button{
+  margin: 20px;
+  align-content: center;
+}
 #Sudoku {
   font-size:2vw;
   width: 100%;
   align-content: center;
+  text-align: center;
 }
 </style>
 </head>
 <body>
 
-<h2>Sudoku</h2>
-
-<p id="Sudoku"><button onclick="StartNewSudoku(SudokuSeed)">Click me</button></p>
+<p id="Sudoku"><button onclick="StartNewSudoku(SudokuSeed)">Start a Sudoku</button></p>
 
 <p id="Debug"></p>
 
@@ -92,7 +99,7 @@ document.getElementById("Sudoku").innerHTML = text;
 function SudokuFieldTouch(ThisID){
 text = "";
 for (j = 0; j < 9; j++) {
-  text += "<button onclick=\"ButtonClick("+(j+1)+","+ThisID+")\">"+(j+1)+"</button>";
+  text += "<button id=\"Button\" onclick=\"ButtonClick("+(j+1)+","+ThisID+")\">"+(j+1)+"</button>";
 }
 
 document.getElementById("Navigation").innerHTML = text;
@@ -104,7 +111,7 @@ document.getElementById(ThisID).innerHTML = Value;
 
 function StartNewSudoku(){
 SudokuSeed = Randomize();
-SudokuSeed = Hide(SudokuSeed);
+SudokuSeed = HideRandomFields(SudokuSeed);
 PlotSudoku(SudokuSeed);
 }
 
@@ -156,12 +163,31 @@ for(x = 0; x < 9; x++)
 }
 
 
-function Hide(QuadraticData){
-  for( NrOfSpaces = 0; NrOfSpaces < 20; NrOfSpaces++){
-    ChangingField = Math.floor(Math.random() * 81);
-    QuadraticData[ChangingField]=" ";
+function HideRandomFields(QuadraticData){
+  var ChangingFields=[];
+  for( NrOfSpaces = 0; NrOfSpaces < 25; NrOfSpaces++){
+    
+    RandomNumber = Math.floor(Math.random() * 81);
+    //document.getElementById("Debug").innerHTML = document.getElementById("Debug").innerHTML + RandomNumber +" ";
+
+    while(InputNrIn(ChangingFields, RandomNumber)){
+      RandomNumber = Math.floor(Math.random() * 81);
+    }
+    ChangingFields[NrOfSpaces] = RandomNumber;
+    
+    QuadraticData[RandomNumber]=" ";
   }
   return QuadraticData;
+}
+
+function InputNrIn(InputArray, Value){
+  for(ArrayValue = 0; ArrayValue < InputArray.length; ArrayValue++){
+    if(InputArray[ArrayValue] == Value){
+      return true;
+    }   
+  }
+  //document.getElementById("Debug").innerHTML = document.getElementById("Debug").innerHTML + "issingle"
+  return false;
 }
 
 
