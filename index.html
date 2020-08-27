@@ -98,8 +98,8 @@ document.getElementById("Sudoku").innerHTML = text;
 
 function SudokuFieldTouch(ThisID){
 text = "";
-for (j = 0; j < 9; j++) {
-  text += "<button id=\"Button\" onclick=\"ButtonClick("+(j+1)+","+ThisID+")\">"+(j+1)+"</button>";
+for (j = 0; j < 10; j++) {
+  text += "<button id=\"Button\" onclick=\"ButtonClick("+(j)+","+ThisID+")\">"+(j)+"</button>";
 }
 
 document.getElementById("Navigation").innerHTML = text;
